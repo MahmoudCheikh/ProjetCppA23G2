@@ -1,0 +1,31 @@
+<RCC>
+    <qresource prefix="/">
+        <file>chef-hat.png</file>
+        <file>book.png</file>
+        <file>Calque 0.png</file>
+        <file>cash.png</file>
+        <file>casic.png</file>
+        <file>food.png</file>
+        <file>hhhhhh.png</file>
+        <file>icons8-face-id-32.png</file>
+        <file>icons8-face-id-64.png</file>
+        <file>icons8-search-client-48.png</file>
+        <file>koujniti_logo.png</file>
+        <file>modi.png</file>
+        <file>mui.png</file>
+        <file>pl.png</file>
+        <file>prod.png</file>
+        <file>prov.png</file>
+        <file>search.png</file>
+        <file>star.png</file>
+        <file>stars.png</file>
+        <file>cor.png</file>
+        <file>favicon.ico</file>
+        <file>hat.png</file>
+        <file>stock.png</file>
+        <file>koujinti.png</file>
+        <file>gif.gif</file>
+        <file>gif5.gif</file>
+        <file>gif2.gif</file>
+    </qresource>
+</RCC>

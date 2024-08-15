@@ -1,8 +1,8 @@
 #include "menu.h"
 #include <QSqlQuery>
 #include <QVariant>
-#include<QDateEdit>
-#include<QTableView>
+#include <QDateEdit>
+#include <QTableView>
 
 menu::menu(){}
 
@@ -106,4 +106,29 @@ void menu::recherche(QTableView* table,int n){
     table->setModel(model);
     table->show();
 }
+int menu::check1() // check if it exsits or not  par id
+{
+    int res1=getID_MENU();
+ int res2 =int(res1);
+    QSqlQuery query;
 
+    query.prepare("select * from MENU where ID_MENU=:ID_MENU");
+    query.bindValue(":ID_MENU",res2);
+
+
+    query.exec();
+
+    int count_user = 0;
+    while (query.next()) {
+        count_user++;
+    }
+
+    if (count_user == 1) {
+        return 0;
+    }
+    else if (count_user > 1 ) {
+        return 1;
+    }
+    else{
+        return 2;
+    }}

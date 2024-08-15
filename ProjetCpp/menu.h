@@ -2,8 +2,9 @@
 #define MENU_H
 #include <QString>
 #include <QSqlQueryModel>
-#include<QDateEdit>
-#include<QTableView>
+#include <QDateEdit>
+#include <QTableView>
+
 class menu
 {
     int ID_MENU;
@@ -35,7 +36,7 @@ public:
     bool modifier();
     void recherche(QTableView* table,int n);
     int lastId();
-
+    int check1();
 };
 
 #endif // FOURNISSEUR_H

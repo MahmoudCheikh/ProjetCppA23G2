@@ -27,12 +27,20 @@ public:
 
 
     bool ajouter();
-    bool supprimer();
+    bool supprimer(int);
     bool update();
     QSqlQueryModel * afficher();
 
-    void recherche(QTableView* table,QString CATEGORIE_PRODUIT);
-    QSqlTableModel * tri(int num);
+    void rechercher(QTableView* table,QString CATEGORIE_PRODUIT);
+
+    QSqlQueryModel * rechercher_cr1(const QString &NOM_PRODUIT);
+    QSqlQueryModel * rechercher_cr2(const QString &CATEGORIE_PRODUIT);
+    void rechercher_cr3(QTableView* table,int num1);
+
+    void tri(QTableView* table);
+    void tri1(QTableView* table);
+    void tri2(QTableView* table);
+    int check();
 
     int lastId();
 

@@ -1,15 +1,19 @@
 #include "table.h"
-
+#include <iostream>
 #include<QtWidgets>
 #include <QSqlQuery>
-#include  <QSqlQueryModel>
+#include <QSqlQueryModel>
 #include <QVariant>
-#include<QTableView>
+#include <QTableView>
 #include <QSqlTableModel>
-#include<QSqlRecord>
-#include<QDebug>
-#include<QString>
-#include<QObject>
+#include <QSqlRecord>
+#include <QDebug>
+#include <QString>
+#include <QObject>
+
+#include <QThread>
+QT_CHARTS_USE_NAMESPACE
+using namespace  std;
 
 Table::Table()
 {
@@ -71,6 +75,7 @@ QSqlQueryModel * Table::afficher(){
 
 return model;
     }
+
 bool Table::supprimer(int NUM_TABLE){
         QSqlQuery query;
         query.prepare("DELETE FROM TABLES WHERE NUM_TABLE=?");
@@ -79,75 +84,107 @@ bool Table::supprimer(int NUM_TABLE){
     }
 bool Table ::modifier()
     {
-        int res1= int (NUM_TABLE);
-       int res2= int(NB_CHAISES);
+     QString res1 = QString::number(NUM_TABLE);
+       QString  res2= QString::number(NB_CHAISES);
         QString res3= QString(EMPLACEMENT);
         QString res4= QString(DISPONIBILITE);
-      int res5= int(DEBARRASSAGE);
+      QString res5 = QString::number(DEBARRASSAGE);
 
         QSqlQuery edit;
 
 
-                          edit.prepare("updateTABLES set NUM_TABLE=:NUM_TABLE, NB_CHAISES=: NB_CHAISES , EMPLACEMENT=:EMPLACEMENT , DISPONIBILITE=:DISPONIBILITE ,DEBARRASSAGE=:DEBARRASSAGE   WHERE NUM_TABLE=:a");
-                          edit.bindValue(":a",res1);
+                          edit.prepare("update TABLES set NUM_TABLE=:NUM_TABLE, NB_CHAISES=:NB_CHAISES , EMPLACEMENT=:EMPLACEMENT , DISPONIBILITE=:DISPONIBILITE ,DEBARRASSAGE=:DEBARRASSAGE   WHERE NUM_TABLE=:NUM_TABLE");
+
+                          edit.bindValue(":NUM_TABLE",res1);
                           edit.bindValue(":NB_CHAISES",res2);
-                          edit.bindValue(": EMPLACEMENT",res3);
-                          edit.bindValue(": DISPONIBILITE",res4);
+                          edit.bindValue(":EMPLACEMENT",res3);
+                          edit.bindValue(":DISPONIBILITE",res4);
                           edit.bindValue(":DEBARRASSAGE",res5);
 
                           return    edit.exec();
     }
-/* QSqlQueryModel * Table::recherche(int NUM_TABLE){
-     QSqlQueryModel *model= new QSqlQueryModel();  //'"+ide+"%'  '"+spec+"'
-        QSqlQuery *query=new QSqlQuery;
-        query->prepare("select * from TABLES  where NUM_TABLE=NUM_TABLE");
-        //QString stringInt = QString::number(this->NUM_TABLE);
-        query->bindValue(":NUM_TABLE",NUM_TABLE);
-        query->exec();
-        model->setQuery(*query);
-        model->setHeaderData(0, Qt::Horizontal,QObject::tr("NUM_TABLE"));
-        model->setHeaderData(1, Qt::Horizontal,QObject::tr("NB_CHAISES"));
-        model->setHeaderData(2, Qt::Horizontal,QObject::tr("EMPLACEMENT"));
-        model->setHeaderData(3, Qt::Horizontal,QObject::tr("DISPONIBILITE"));
-        model->setHeaderData(4, Qt::Horizontal,QObject::tr("DEBARRASSAGE"));
-        return model;
-}*/
- void Table::recherche(QTableView* table,int NUM_TABLE)
+int Table::check() // check if it exsits or not  par id
+{
+    int res1=get_NUM_TABLE();
+ QString res2 = QString::number(res1);
+    QSqlQuery query;
+
+    query.prepare("select * from TABLES where NUM_TABLE =:NUM_TABLE");
+    query.bindValue(":NUM_TABLE",res2);
+
+
+    query.exec();
+
+    int count_user = 0;
+    while (query.next()) {
+        count_user++;
+    }
+
+    if (count_user == 1) {
+        return 0;
+    }
+    else if (count_user > 1 ) {
+        return 1;
+    }
+}
+int Table::check1() // check if it exsits or not  par id
+{
+    int res1=get_NB_CHAISES();
+ QString res2 = QString::number(res1);
+    QSqlQuery query;
+
+    query.prepare("select * from TABLES where NB_CHAISES=:NB_CHAISES");
+    query.bindValue(":NB_CHAISES",res2);
+
+
+    query.exec();
+
+    int count_user = 0;
+    while (query.next()) {
+        count_user++;
+    }
+
+    if (count_user == 1) {
+        return 0;
+    }
+    else if (count_user > 1 ) {
+        return 1;
+    }
+}
+ void Table::recherche(QTableView* table,int NUM_TABLE)//recherche table PAR SON NUM
  {
   QSqlQueryModel *model= new QSqlQueryModel();  //'"+ide+"%'  '"+spec+"'
     QSqlQuery *query=new QSqlQuery;
-    query->prepare("select * from TABLES  where NUM_TABLE=NUM_TABLE");
+    query->prepare("select * from TABLES  where NUM_TABLE=:NUM_TABLE");
     query->bindValue(":NUM_TABLE",NUM_TABLE);
     query->exec();
     model->setQuery(*query);
     table->setModel(model);
     table->show();}
-/*
-  QSqlQueryModel * client::recherche_client(int ID_CLIENT)
-   {
-   QSqlQuery q;
-   q.prepare("select * from client where ID_CLIENT=:ID_CLIENT");
-   q.bindValue(":ID_CLIENT", ID_CLIENT);
-   q.exec();
-   QSqlQueryModel * model = new QSqlQueryModel;
-   model->setQuery(q);
-   model->setHeaderData(0, Qt::Horizontal, QObject::tr("ID_CLIENT"));
-   model->setHeaderData(1, Qt::Horizontal, QObject::tr("QUANTITE_ARTICLES"));
-   model->setHeaderData(2, Qt::Horizontal, QObject::tr("STATUT"));
-   model->setHeaderData(3, Qt::Horizontal, QObject::tr("PRODUIT_ACHETE"));
-   QSqlRecord rec = model->record(0);
-   int id = rec.value("ID_CLIENT").toInt();
-   if( id == ID_CLIENT){
-       return model;
-     }
-   return nullptr;
-   }
- QSqlQueryModel *Table::tri()
+ void Table::rechercheC(QTableView* table,int NB_CHAISES)//recherche table PAR NBR CHAISES
  {
-     QSqlQueryModel * model=new QSqlQueryModel();
-     model->setQuery("select * from TABLES order by  NUM_TABLE");
-      return model;
- }*/
+  QSqlQueryModel *model= new QSqlQueryModel();
+    QSqlQuery *query=new QSqlQuery;
+     QString CHAI = QString::number(NB_CHAISES);
+    query->prepare("select * from TABLES  where NB_CHAISES=:NB_CHAISES");
+    query->bindValue(":NB_CHAISES",CHAI);
+    query->exec();
+    model->setQuery(*query);
+    table->setModel(model);
+    table->show();}
+ void Table::rechercheD(QTableView* table,int DEBARRASSAGE)//recherche table PAR ETAT debarrassage
+ {
+  QSqlQueryModel *model= new QSqlQueryModel();
+    QSqlQuery *query=new QSqlQuery;
+    QString DEB = QString::number(DEBARRASSAGE);
+    query->prepare("select * from TABLES  where DEBARRASSAGE=:DEBARRASSAGE");
+
+    query->bindValue(":DEBARRASSAGE",DEB);
+    query->exec();
+    model->setQuery(*query);
+    table->setModel(model);
+    table->show();}
+
 
 void Table::tri_Num(QTableView* table){
 
@@ -170,4 +207,88 @@ void Table::tri_NB(QTableView* table){
     table->show();
 }
 
+void Table::tri_DEB(QTableView* table)// trier selon etat debarrassage
+{
 
+    QSqlQueryModel *model= new QSqlQueryModel();
+    QSqlQuery *query=new QSqlQuery;
+    query->prepare("select * from TABLES  ORDER BY DEBARRASSAGE ASC");
+    query->exec();
+    model->setQuery(*query);
+    table->setModel(model);
+    table->show();
+}
+int Table::lastIDNumtable(){
+        int lastId = 0;
+        QSqlQuery qry3 ;
+        qry3.prepare("select MAX(NUM_TABLE) from TABLES");
+        if (qry3.exec()){
+            while(qry3.next()){
+            lastId = qry3.value(0).toInt();}
+        }
+        return lastId;
+    }
+
+    int Table::lastIDnbchaise(){
+        int lastId = 0;
+        QSqlQuery qry3 ;
+        qry3.prepare("select MAX(NB_CHAISES) from TABLES");
+        if (qry3.exec()){
+            while(qry3.next()){
+            lastId = qry3.value(0).toInt();}
+        }
+        return lastId;
+    }
+
+
+   QVBoxLayout * Table::stat(){
+        int countTABLE = this->lastIDNumtable();
+        int countNBCHAISES = this->lastIDnbchaise();
+        QStringList categories;
+        for (int j = 1;j<= countNBCHAISES;j++) {
+            categories << QString::fromStdString(std::to_string(j));
+        }
+        cout << countTABLE << " " << countNBCHAISES << endl;
+         QBarSeries *series = new QBarSeries();
+        for (int i=1;i <= countTABLE;i++) {
+            std::string s = std::to_string(i);
+            QString qstr = QString::fromStdString(s);
+            QBarSet *set0 = new QBarSet(qstr);
+            for (int j=1;j<= countNBCHAISES;j++) {
+
+                QSqlQuery query;
+
+                QString stringnbchaises = QString::number(j);
+                QString stringnumTable = QString::number(i);
+
+                query.prepare("SELECT DEBARRASSAGE FROM TABLES WHERE NUM_TABLE=? AND NB_CHAISES=?");
+
+                query.addBindValue(stringnumTable);
+                query.addBindValue(stringnbchaises);
+
+                 query.exec();
+                 if(query.next()){
+                     *set0 << query.value(0).toUInt();
+                 }else{
+                     *set0 << 0;
+                 }
+            }
+            series->append(set0);
+        }
+           QChart *chart = new QChart();
+           chart->addSeries(series);
+           chart->setTitle("Offres prix produit");
+           chart->setAnimationOptions(QChart::SeriesAnimations);
+           QBarCategoryAxis *axis = new QBarCategoryAxis();
+           axis->append(categories);
+           chart->createDefaultAxes();
+           chart->setAxisX(axis, series);
+           chart->legend()->setVisible(true);
+           chart->legend()->setAlignment(Qt::AlignBottom);
+           QChartView *chartView = new QChartView(chart);
+           chartView->setRenderHint(QPainter::Antialiasing);
+           QVBoxLayout *mainLayout = new QVBoxLayout;
+           mainLayout->addWidget(chartView);
+           return mainLayout;
+
+    }

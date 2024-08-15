@@ -2,7 +2,8 @@
 #define PLAT_H
 #include <QString>
 #include <QSqlQueryModel>
-#include<QTableView>
+#include <QTableView>
+
 class plat
 {
     QString NOM_PLAT;
@@ -37,8 +38,15 @@ public:
     bool modifier();
     void recherche(QTableView* table,QString);
      void recherche1(QTableView* table,int);
+    QSqlQueryModel *chercher_ut(const QString &aux);
+       QSqlQueryModel *chercher_ut1(const QString &aux);
+      void chercher_ut2(QTableView* table,int aux);
     int lastId();
 void trie(QTableView* table);
+void tri(QTableView* table);
+QSqlQueryModel* tri();
+QSqlQueryModel* tri2();
+int check1();
 
 };
 
